@@ -16,7 +16,7 @@
 #' @template seealso_learner
 #' @template example
 #' @export
-LearnerClassifNaiveBayesText = R6Class("LearnerClassifNaiveBayesText",
+LearnerClassifNaiveBayesText = R6::R6Class("LearnerClassifNaiveBayesText",
   inherit = LearnerClassif,
 
   public = list(
@@ -62,10 +62,12 @@ LearnerClassifNaiveBayesText = R6Class("LearnerClassifNaiveBayesText",
       y = unlist(data[, 1])
       x =
         quanteda::dfm(
-          quanteda::corpus(
-            as.character(unlist(data[, -1]))
-          )
-      )
+          as.character(unlist(data[, -1])),
+          remove = stopwords("english"),
+          remove_punct = TRUE,
+          remove_symbols = TRUE,
+          remove_numbers = TRUE
+        )
 
       mlr3misc::invoke(quanteda.textmodels::textmodel_nb,
         # formula = formula, data = data, .args = pars)
@@ -76,9 +78,11 @@ LearnerClassifNaiveBayesText = R6Class("LearnerClassifNaiveBayesText",
 
       newdata =
         quanteda::dfm(
-          quanteda::corpus(
-            as.character(unlist(task$data()[, -1]))
-          )
+          as.character(unlist(task$data()[, -1])),
+          remove = stopwords("english"),
+          remove_punct = TRUE,
+          remove_symbols = TRUE,
+          remove_numbers = TRUE
         )
       newdata =
         quanteda::dfm_match(
